@@ -1,0 +1,763 @@
+# Starting Out (for real)
+
+::: 
+Erlang is a relatively small and simple language (in the way C is simpler than C++). There are a few basic data types built in the language, and as such, this chapter will cover most of them. Reading it is strongly advised as it explains the building blocks for all the programs you'll write with Erlang later on.
+Erlang是一种相对较小且简单的语言（C比C++更简单）。该语言中有一些基本的数据类型，因此，本章将介绍其中的大部分。强烈建议阅读它，因为它解释了您稍后将使用Erlang编写的所有程序的构建块。
+:::
+
+## [Numbers]
+
+In the Erlang shell, **expressions have to be terminated with a period followed by whitespace** (line break, a space etc.), otherwise they won't be executed. You can separate expressions with commas, but only the result of the last one will be shown (the others are still executed). This is certainly unusual syntax for most people and it comes from the days Erlang was implemented directly in Prolog, a logic programming language.
+在Erlang shell中，**表达式必须以句点结尾，后跟空格**（换行符、空格等）。)，否则他们不会被处决。可以用逗号分隔表达式，但只显示最后一个表达式的结果（其他表达式仍在执行）。这对大多数人来说肯定是不寻常的语法，它来自于Erlang直接在逻辑编程语言Prolog中实现的日子。
+
+Open the Erlang shell as described in the previous chapters and let's type them things!
+
+```eshell
+1> 2 + 15.
+17
+2> 49 * 100.
+4900
+3> 1892 - 1472.
+420
+4> 5 / 2.
+2.5
+5> 5 div 2.
+2
+6> 5 rem 2.
+1
+```
+
+You should have noticed Erlang doesn't care if you enter floating point numbers or integers: both types are supported when dealing with arithmetic. ![A calculator with the number '80085' typed in](../img/calculator.png "tee hee") Integers and floating values are pretty much the only types of data Erlang's mathematical operators will handle transparently for you. However, if you want to have the integer-to-integer division, use `div`, and to have the modulo operator, use `rem` (remainder).
+您应该注意到，Erlang并不关心是否输入浮点数或整数：在处理算术运算时，这两种类型都受支持。![输入了数字“80085”的计算器](。。/静态/img/计算器。png“tee-hee”）整数和浮点值几乎是Erlang的数学运算符为您透明处理的唯一数据类型。但是，如果要进行整数到整数的除法，请使用'div'，要进行模运算，请使用'rem'（余数）。
+
+Note that we can use several operators in a single expression, and mathematical operations obey the normal precedence rules.
+我们注意到，在一个数学表达式中，我们可以使用几个正常的优先级运算符。
+
+```eshell
+7> (50 * 100) - 4999.
+1
+8> -(50 * 100 - 4999).
+-1
+9> -50 * (100 - 4999).
+244950
+```
+
+If you want to express integers in other bases than base 10, just enter the number as `Base#Value` (given Base is in the range 2..36):
+如果你想用除基数10以外的其他基数来表示整数，只需输入“base#Value”（给定的基数在2范围内）这个数字即可。。36):
+
+```eshell
+10> 2#101010.
+42
+11> 8#0677.
+447
+12> 16#AE.
+174
+```
+
+Awesome! Erlang has the power of the calculator you have on the corner of your desk with a weird syntax on top of it! Absolutely exciting!
+令人惊叹的Erlang拥有你桌角上的计算器的强大功能，上面有一个奇怪的语法！绝对令人兴奋！
+
+## [Invariable Variables]
+
+Doing arithmetic is alright, but you won't go far without being able to store results somewhere. For that, we'll use variables. If you have read the intro to this book, you'll know that variables can't be variable in functional programming. The basic behavior of variables can be demonstrated with these 7 expressions (note that variables begin with an uppercase letter):
+做算术是可以的，但如果你不能将结果存储在某个地方，你就不会走得太远。为此，我们将使用变量。如果你读过这本书的介绍，你就会知道变量在函数式编程中是不可变的。变量的基本行为可以通过以下7个表达式来演示（注意，变量以大写字母开头）：
+
+```eshell
+1> One.
+* 1: variable 'One' is unbound
+2> One = 1.
+1
+3> Un = Uno = One = 1.
+1
+4> Two = One + One.
+2
+5> Two = 2.        
+2
+6> Two = Two + 1.
+** exception error: no match of right hand side value 3
+7> two = 2.
+** exception error: no match of right hand side value 2
+```
+
+The first thing these commands tell us is that you can assign a value to a variable exactly once; then you can 'pretend' to assign a value to a variable if it's the same value it already has. If it's different, Erlang will complain. It's a correct observation, but the explanation is a bit more complex and depends on the `=` operator. The `=` operator (not the variables) has the role of comparing values and complaining if they're different. If they're the same, it returns the value:
+这些命令告诉我们的第一件事是，你可以只给变量赋值一次；然后你可以“假装”给一个变量赋值，如果它已经有了相同的值。如果情况不同，Erlang会抱怨。这是一个正确的观察结果，但解释有点复杂，取决于“=”运算符。“=”运算符（不是变量）的作用是比较值，并在值不同时发出抱怨。如果它们相同，则返回值：
+
+```eshell
+8> 47 = 45 + 2.
+47
+9> 47 = 45 + 3.
+** exception error: no match of right hand side value 48
+```
+
+What this operator does when mixed with variables is that if the left-hand side term is a variable and it is unbound (has no value associated to it), Erlang will automatically bind the right-hand side value to the variable on the left-hand side. The comparison will consequently succeed and the variable will keep the value in memory.
+当与变量混合时，该运算符的作用是，如果左侧项是一个变量且未绑定（没有与之关联的值），Erlang将自动将右侧值绑定到左侧的变量。因此，比较将成功，变量将在内存中保留该值。
+
+This behavior of the `=` operator is the basis of something called 'Pattern matching', which many functional programming languages have, although Erlang's way of doing things is usually regarded as more flexible and complete than alternatives. We'll see pattern matching with more detail when we visit the tuple and list types in this very chapter, and also with functions in the following chapters.
+“=”运算符的这种行为是“模式匹配”的基础，许多函数式编程语言都有“模式匹配”，尽管Erlang的处理方式通常被认为比其他方法更灵活、更完整。当我们在这一章中访问元组和列表类型时，我们将看到模式匹配的更多细节，在接下来的章节中也将看到函数。
+
+The other thing the commands 1-7 told us is that variable names must begin with a capital letter. Command 7 failed because the word `two` had a lowercase letter to begin with. Technically, variables can start with an underscore ('\_') too, but by convention their use is restricted to values you do not care about, yet you felt it was necessary to document what it contains.
+命令1-7告诉我们的另一件事是变量名必须以大写字母开头。命令7失败，因为单词'two'以小写字母开头。从技术上讲，变量也可以以下划线（'\\'）开头，但按照惯例，它们的使用仅限于您不关心的值，但您觉得有必要记录它包含的内容。
+
+You can also have variables that are only an underscore:
+
+```eshell
+10> _ = 14+3.
+17
+11> _.
+* 1: variable '_' is unbound
+```
+
+Unlike any other kind of variable, it won't ever store any value. Totally useless for now, but you'll know it exists when we need it.
+与任何其他类型的变量不同，它永远不会存储任何值。现在完全没有用，但当我们需要它时，你会知道它的存在。
+
+::: note
+**Note:** If you're testing in the shell and save the wrong value to a variable, it is possible to 'erase' that variable by using the function `f(Variable).`. If you wish to clear all variable names, do `f().`.
+**注：*如果在shell中进行测试，并将错误的值保存到变量中，则可以使用函数“f（variable）”来“擦除”该变量。`。如果希望清除所有变量名，请执行'f（）。`。
+
+These functions are there only to help you when testing and only work in the shell. When writing real programs, we won't be able to destroy values that way. Being able to do it only in the shell makes sense if you acknowledge Erlang being usable in industrial scenarios: it is wholly possible to have a shell being active for years without interruption\... Let's bet that the variable `X` would be used more than once in that time period.
+这些函数只在测试时提供帮助，并且只能在shell中工作。在编写真正的程序时，我们无法以这种方式破坏价值观。如果您承认Erlang在工业场景中可用，那么只有在shell中才能做到这一点是有意义的：shell完全有可能在数年内不间断地处于活动状态\。。。让我们打赌变量'X'在那个时间段内会被多次使用。
+:::
+
+## [Atoms]
+
+There is a reason why variables names can't begin with a lowercase character: atoms. Atoms are literals, constants with their own name for value. What you see is what you get and don't expect more. The atom `cat`. Deal with it.
+变量名不能以小写字母开头是有原因的：atoms。原子是文字，常数有自己的名字作为值。你看到的就是你得到的，不要期待更多。原子猫`。处理它。
+
+While single words starting with a lowercase letter is a way to write an atom, there's more than one manner to do it:
+虽然以小写字母开头的单字是编写atom的一种方式，但有多种方式：
+
+```eshell
+1> atom.
+atom
+2> atoms_rule.
+atoms_rule
+3> atoms_rule@erlang.
+atoms_rule@erlang
+4> 'Atoms can be cheated!'.
+'Atoms can be cheated!'
+5> atom = 'atom'.
+atom
+```
+
+An atom should be enclosed in single quotes (') if it does not begin with a lower-case letter or if it contains other characters than alphanumeric characters, underscore (\_), or @.\
+如果原子不是以小写字母开头，或者包含字母数字字符、下划线（\'）或其他字符，则应将其括在单引号（'）中@。\
+Expression 5 also shows that an atom with single quotes is exactly the same as a similar atom without them.
+表达式5还表明，带有单引号的原子与没有单引号的类似原子完全相同。
+
+I compared atoms to constants having their name as their values. You may have worked with code that used constants before: as an example, let's say I have values for eye colors: ![An Atom, as imagined by Rutherford](../img/atom.png) (Modules).
+我将原子与以其名称作为其值的常数进行比较。您以前可能使用过使用常量的代码：例如，假设我有眼睛颜色的值：！【卢瑟福想象的原子】(。。/静态/img/atom。（png）（模块）。
+
+An atom is therefore mainly useful to express or qualify data coupled with it. Used alone, it's a bit harder to find a good use to it. This is why we won't spend more time toying with them; their best use will come when coupled with other types of data.
+因此，原子主要用于表示或限定与其耦合的数据。单独使用，很难找到好的用途。这就是为什么我们不会花更多时间去玩弄它们；当与其他类型的数据结合使用时，它们将得到最佳利用。
+
+::: 
+**Don't drink too much Kool-Aid:**\
+Atoms are really nice and a great way to send messages or represent constants. However there are pitfalls to using atoms for too many things: an atom is referred to in an \"atom table\" which consumes memory (4 bytes/atom in a 32-bit system, 8 bytes/atom in a 64-bit system). The atom table is not garbage collected, and so atoms will accumulate until the system tips over, either from memory usage or because 1048577 atoms were declared.
+原子真的很好，是发送信息或表示常数的好方法。然而，在太多事情上使用原子也有缺陷：原子在消耗内存的“原子表”中被引用（32位系统中为4字节/原子，64位系统中为8字节/原子）。atom表不是垃圾收集的，因此原子将累积，直到系统提示结束，这可能是因为内存使用情况，也可能是因为声明了1048577个原子。
+
+This means atoms should not be generated dynamically for whatever reason; if your system has to be reliable and user input lets someone crash it at will by telling it to create atoms, you're in serious trouble. Atoms should be seen as tools for the developer because honestly, it's what they are.
+这意味着无论出于何种原因，原子都不应该动态生成；如果你的系统必须是可靠的，而用户的输入让某人通过告诉它产生原子来随意破坏它，那么你就有大麻烦了。原子应该被视为开发人员的工具，因为老实说，原子就是这样。
+:::
+
+::: note
+**Note:** some atoms are reserved words and can not be used except for what the language designers wanted them to be: function names, operators, expressions, etc. These are:
+**注：*有些原子是保留字，不能使用，除非语言设计者希望它们是：函数名、运算符、表达式等。这些是：
+`after and andalso band begin bnot bor bsl bsr bxor case catch cond div end fun if let not of or orelse query receive rem try when xor`
+`之后和andalso乐队开始bnot bor bsl bsr bxor case catch cond div end fun if let not of或orelse query receive rem try when xor`
+:::
+
+![George Boole](../img/boole.png ""Sup baby, would you like to go Booling?"")
+
+## [Boolean Algebra & Comparison operators]
+
+One would be in pretty deep trouble if one couldn't tell the difference between what's small and big, what's true and false. As any other language, Erlang has ways to let you use boolean operations and to compare items.
+如果一个人不能分辨出什么是小的和大的，什么是真的和假的，那么他就会陷入相当大的麻烦之中。与其他任何语言一样，Erlang也可以让您使用布尔运算和比较项。
+
+Boolean algebra is dirt simple:
+
+```eshell
+1> true and false.
+false
+2> false or true.
+true
+3> true xor false.
+true
+4> not false.
+true
+5> not (true and true).
+false
+```
+
+::: note
+**Note:** the boolean operators `and` and `or` will always evaluate arguments on both sides of the operator. If you want to have the short-circuit operators (which will only evaluate the right-side argument if it needs to), use `andalso` and `orelse`.
+**注：*布尔运算符`和`和`或`将始终计算运算符两侧的参数。如果希望使用短路运算符（如果需要，只会计算右侧参数），请使用'andalso'和'orelse'`。
+:::
+
+Testing for equality or inequality is also dirt simple, but has slightly different symbols from those you see in many other languages:
+平等或不平等的测试也非常简单，但符号与许多其他语言中的符号略有不同：
+
+```eshell
+6> 5 =:= 5.
+true
+7> 1 =:= 0.
+false
+8> 1 =/= 0.
+true
+9> 5 =:= 5.0. 
+false
+10> 5 == 5.0.
+true
+11> 5 /= 5.0.
+false
+```
+
+First of all, if your usual language uses `==` and `!=` to test for and against equality, Erlang uses `=:=` and `=/=`. The three last expressions (lines 9 to 11) also introduce us to a pitfall: Erlang won't care about floats and integers in arithmetic, but will do so when comparing them. No worry though, because the `==` and `/=` operators are there to help you in these cases. This is important to remember whether you want exact equality or not.
+首先，如果你的日常语言使用“==”和“！=”为了测试是否相等，Erlang使用“=：=”和`=/=`。最后三个表达式（第9行到第11行）也给我们带来了一个陷阱：Erlang不关心算术中的浮点数和整数，但在比较它们时会这样做。不过不用担心，因为`=`和`/=`运算符在这些情况下会帮助您。记住这一点很重要，无论你是否想要完全平等。
+
+Other operators for comparisons are `<` (less than), `>` (greater than), `>=` (greater than or equal to) and `=<` (less than or equal to). That last one is backwards (in my opinion) and is the source of many syntax errors in my code. Keep an eye on that `=<`.
+用于比较的其他运算符有`<`（小于）、`>`（大于）、`>=`（大于或等于）和`=<`（小于或等于）。最后一个是向后的（在我看来），是我代码中许多语法错误的根源。注意`=<`。
+
+```eshell
+12> 1 < 2.
+true
+13> 1 < 1.
+false
+14> 1 >= 1.
+true
+15> 1 =< 1.
+true
+```
+
+What happens when doing `5 + llama` or `5 == true`? There's no better way to know than trying it and subsequently getting scared by error messages!
+当``真的`=5+llama时会发生什么？没有比尝试它然后被错误消息吓到更好的方法了！
+
+```eshell
+12> 5 + llama.
+** exception error: bad argument in an arithmetic expression
+     in operator  +/2
+        called as 5 + llama
+```
+
+Welp! Erlang doesn't really like you misusing some of its fundamental types! The emulator returns a nice error message here. It tells us it doesn't like one of the two arguments used around the `+` operator!
+好啊！Erlang真的不喜欢你滥用它的一些基本类型！模拟器在这里返回了一条很好的错误消息。它告诉我们它不喜欢围绕“+”运算符使用的两个参数之一！
+
+Erlang getting mad at you for wrong types is not always true though:
+
+```eshell
+13> 5 =:= true.
+false
+```
+
+Why does it refuse different types in some operations but not others? While Erlang doesn't let you *add* anything with everything, it will let you *compare* them. This is because the creators of Erlang thought pragmaticism beats theory and decided it would be great to be able to simply write things like general sorting algorithms that could order any term. It's there to make your life simpler and can do so the vast majority of the time.
+为什么它在某些操作中拒绝不同的类型，而在其他操作中不拒绝？虽然Erlang不允许你添加任何东西，但它可以让你对它们进行比较。这是因为Erlang的创造者认为实用主义优于理论，并决定能够简单地编写一些东西，比如可以对任何术语进行排序的通用排序算法，这将是非常棒的。它能让你的生活变得更简单，并且在大多数情况下都能做到。
+
+There is one last thing to keep in mind when doing boolean algebra and comparisons:
+
+```eshell
+14> 0 == false.
+false
+15> 1 < false.
+true
+```
+
+Chances are you're pulling your hair if you come from procedural languages or most object-oriented languages. Line 14 should evaluate to `true`! After all, false means 0 and true is anything else! Except in Erlang. Because I lied to you. Yes, I did that. Shame on me.
+如果你来自过程语言或大多数面向对象语言，那么你很可能是在开玩笑。第14行应该评估为“真”！毕竟，false意味着0，true意味着其他一切！除了在二郎。因为我骗了你。是的，我做到了。真丢脸。
+
+Erlang has no such things as boolean `true`. The terms true and false are atoms, but they are integrated well enough into the language you shouldn't have a problem with that as long as you don't expect false and true to mean anything but false and true.
+Erlang没有布尔'true这样的东西`。“真”和“假”这两个词是原子，但它们已经很好地融入了语言中，只要你不认为“假”和“真”是假和真以外的任何意思，你就不应该对此有任何问题。
+
+::: note
+**Note:** The correct ordering of each element in a comparison is the following:\
+`number < atom < reference < fun < port < pid < tuple < list < bit string`
+
+You don't know all these types of things yet, but you will get to know them through the book. Just remember that this is why you can compare anything with anything! To quote Joe Armstrong, one of the creators of Erlang: \"The actual order is not important - but that a total ordering is well defined is important.\"
+你还不知道所有这些类型的事情，但你会通过这本书了解它们。记住，这就是为什么你可以将任何东西与任何东西进行比较！引用Erlang的创始人之一乔·阿姆斯特朗的话：“实际的顺序并不重要，但总的顺序是明确定义的，这一点很重要。”。\"
+:::
+
+## [Tuples]
+
+A tuple is a way to organize data. It's a way to group together many terms when you know how many there are. In Erlang, a tuple is written in the form ``. As an example, you'd give me the coordinates (x,y) if you wanted to tell me the position of a point in a Cartesian graph. We can represent this point as a tuple of two terms:
+元组是一种组织数据的方法。当你知道有多少个术语时，这是一种将许多术语组合在一起的方法。在Erlang中，元组是以``。举个例子，如果你想告诉我笛卡尔图中一个点的位置，你可以给我坐标（x，y）。我们可以将这一点表示为两个项的元组：
+
+```eshell
+1> X = 10, Y = 4.
+4
+2> Point = .
+
+```
+
+In this case, a point will always be two terms. Instead of carrying the variables `X` coordinate? It's not hard to extract that information. Remember that when we assigned values, Erlang would never complain if they were the same. Let's exploit that! You may need to clean the variables we had set with `f()`.
+在这种情况下，一个点总是两个术语。而不是携带变量'X'坐标？提取这些信息并不难。记住，当我们赋值时，如果值相同，Erlang永远不会抱怨。让我们利用它！您可能需要清理我们用`f（）设置的变量`。
+
+```eshell
+3> Point = .
+
+4>  = Point.
+
+5> X.
+4
+6>  = Point.
+
+```
+
+From then on we can use `X``, which obviously succeeds! That's one of the many forms of pattern matching.
+从那时起，我们可以使用'X'，这显然是成功的！这是模式匹配的多种形式之一。
+
+Note that on expression 6, I used the anonymous `_` variable is always seen as unbound and acts as a wildcard for pattern matching. Pattern matching to unpack tuples will only work if the number of elements (the tuple's length) is the same.
+请注意，在表达式6中，我使用了匿名变量``，它总是被视为未绑定的，并充当模式匹配的通配符。只有在元素数（元组的长度）相同的情况下，模式匹配才能解包元组。
+
+```eshell
+7> .
+
+8> .
+** exception error: no match of right hand side value 
+```
+
+Tuples can also be useful when working with single values. How so? The simplest example is temperature:
+元组在处理单个值时也很有用。为什么呢最简单的例子是温度：
+
+```eshell
+9> Temperature = 23.213.
+23.213
+```
+
+Well, it sounds like a good day to go to the beach\... Wait, is this temperature in Kelvin, Celsius or Fahrenheit?
+听起来是去海滩的好日子\。。。等等，这个温度是开尔文，摄氏度还是华氏度？
+
+```eshell
+10> PreciseTemperature = .
+
+11>  = PreciseTemperature.
+** exception error: no match of right hand side value 
+```
+
+This throws an error, but it's exactly what we want! This is, again, pattern matching at work. The `=` operator ends up comparing ` atom when comparing them. An exception is thrown which stops the execution of code. By doing so, the part of our program that expects a temperature in Kelvin won't be able to process temperatures sent in Celsius. This makes it easier for the programmer to know what is being sent around and also works as a debugging aid. A tuple which contains an atom with one element following it is called a 'tagged tuple'. Any element of a tuple can be of any type, even another tuple:
+这会抛出一个错误，但这正是我们想要的！这也是模式匹配在起作用。“=”操作符在比较原子时会比较原子。抛出一个异常，停止代码的执行。通过这样做，我们的程序中预期温度为开尔文的部分将无法处理以摄氏度发送的温度。这使得程序员更容易知道发送的是什么，也可以作为调试辅助工具。一个元组包含一个原子，其后有一个元素，称为“标记元组”。元组的任何元素都可以是任何类型的，甚至是另一个元组：
+
+```eshell
+12> .
+
+```
+
+What if we want to carry around more than one Point though?
+
+## [Lists!]
+
+Lists are the bread and butter of many functional languages. They're used to solve all kinds of problems and are undoubtedly the most used data structure in Erlang. Lists can contain anything! Numbers, atoms, tuples, other lists; your wildest dreams in a single structure. The basic notation of a list is `[Element1, Element2, ..., ElementN]` and you can mix more than one type of data in it:
+列表是许多函数式语言的基本组成部分。它们用于解决各种问题，无疑是Erlang中使用最多的数据结构。列表可以包含任何内容！数字、原子、元组和其他列表；你最疯狂的梦想在一个单一的结构。列表的基本符号是“[Element1，Element2，。。。，ElementN]`您可以在其中混合多种类型的数据：
+
+```eshell
+1> [1, 2, 3, , 5.34, atom].
+[1,2,3,,5.34,atom]
+```
+
+Simple enough, right?
+
+```eshell
+2> [97, 98, 99].
+"abc"
+```
+
+Uh oh! This is one of the most disliked things in Erlang: strings! Strings are lists and the notation is absolutely the exact same! Why do people dislike it? Because of this:
+哦！这是Erlang中最不喜欢的东西之一：字符串！字符串是列表，符号完全相同！为什么人们不喜欢它？因此：
+
+```eshell
+3> [97,98,99,4,5,6].
+[97,98,99,4,5,6]
+4> [233].
+"é"
+```
+
+Erlang will print lists of numbers as numbers only when at least one of them could not also represent a letter! There is no such thing as a real string in Erlang! This will no doubt come to haunt you in the future and you'll hate the language for it. Don't despair, because there are other ways to write strings we'll see later in this chapter.
+只有当其中至少一个数字不能代表字母时，Erlang才会将数字列表打印为数字！在Erlang中没有真正的字符串！毫无疑问，这会在未来困扰你，你会因此而讨厌这种语言。不要绝望，因为还有其他写字符串的方法，我们将在本章后面看到。
+
+::: 
+**Don't drink too much Kool-Aid:**\
+This is why you may have heard Erlang is said to suck at string manipulation: there is no built-in string type like in most other languages. This is because of Erlang's origins as a language created and used by telecom companies. They never (or rarely) used strings and as such, never felt like adding them officially. However, most of Erlang's lack of sense in string manipulations is getting fixed with time: The VM now natively supports Unicode strings, and overall gets faster on string manipulations all the time.
+这就是为什么你可能听说Erlang在字符串操作方面很差劲：没有像大多数其他语言那样的内置字符串类型。这是因为Erlang起源于电信公司创造和使用的一种语言。他们从不（或很少）使用字符串，因此，从来没有正式添加过字符串。然而，Erlang在字符串操作方面缺乏判断力的主要原因是随着时间的推移而逐渐得到修复：VM现在本机支持Unicode字符串，而且总体而言，字符串操作的速度一直在加快。
+
+There is also a way to store strings as a binary data structure, making them really light and faster to work with. All in all, there are still some functions missing from the standard library and while string processing is definitely doable in Erlang, there are somewhat better languages for tasks that need lots of it, like Perl or Python.
+还有一种方法可以将字符串存储为二进制数据结构，从而使它们更加轻巧，处理起来更快。总而言之，标准库中仍然缺少一些函数，虽然字符串处理在Erlang中是绝对可行的，但对于需要大量字符串处理的任务，有一些更好的语言，比如Perl或Python。
+:::
+
+To glue lists together, we use the `++` operator. The opposite of `++` is `--` and will remove elements from a list:
+要将列表粘合在一起，我们使用“++”操作符。“++”的反面是“---”，它将从列表中删除元素：
+
+```eshell
+5> [1,2,3] ++ [4,5].
+[1,2,3,4,5]
+6> [1,2,3,4,5] -- [1,2,3].
+[4,5]
+7> [2,4,2] -- [2,4].
+[2]
+8> [2,4,2] -- [2,4,2].
+[]
+```
+
+Both `++` and `--` are right-associative. This means the elements of many `--` or `++` operations will be done from right to left, as in the following examples:
+“++”和“--”都是正确的关联。这意味着许多“---”或“++”操作的元素将从右向左执行，如以下示例所示：
+
+```eshell
+9> [1,2,3] -- [1,2] -- [3].
+[3]
+10> [1,2,3] -- [1,2] -- [2].
+[2,3]
+```
+
+Let's keep going. The first element of a list is named the Head, and the rest of the list is named the Tail. We will use two built-in functions (BIF) to get them.
+让我们继续。列表的第一个元素名为Head，其余元素名为Tail。我们将使用两个内置函数（BIF）来获取它们。
+
+```eshell
+11> hd([1,2,3,4]).
+1
+12> tl([1,2,3,4]).
+[2,3,4]
+```
+
+::: note
+**Note:** built-in functions (BIFs) are usually functions that could not be implemented in pure Erlang, and as such are defined in C, or whichever language Erlang happens to be implemented on (it was Prolog in the 80's). There are still some BIFs that could be done in Erlang but were still implemented in C in order to provide more speed to common operations. One example of this is the `length(List)` function, which will return the (you've guessed it) length of the list passed in as the argument.
+**无论是在纯C语言中定义的函数，还是在纯C语言中实现的函数：*。还有一些BIF可以在Erlang中实现，但仍然是在C中实现的，以便为普通操作提供更高的速度。其中一个例子是'length（List）`函数，它将返回作为参数传入的列表的长度（您已经猜到了）。
+:::
+
+Accessing or adding the head is fast and efficient: virtually all applications where you need to deal with lists will always operate on the head first. As it's used so frequently, there is a nicer way to separate the head from the tail of a list with the help of pattern matching: `[Head|Tail]`. Here's how you would add a new head to a list:
+访问或添加head既快速又高效：几乎所有需要处理列表的应用程序都会首先在head上运行。由于它被频繁使用，有一种更好的方法可以通过模式匹配来区分列表的开头和结尾：“[head | tail]`。以下是如何在列表中添加新标题：
+
+```eshell
+13> List = [2,3,4].
+[2,3,4]
+14> NewList = [1|List].
+[1,2,3,4]
+```
+
+When processing lists, as you usually start with the head, you want a quick way to also store the tail to later operate on it. If you remember the way tuples work and how we used pattern matching to unpack the values of a point (`), you'll know we can get the first element (the head) sliced off a list in a similar manner.
+在处理列表时，通常从头部开始，您需要一种快速的方法来存储尾部，以便以后对其进行操作。如果您还记得元组的工作方式，以及我们如何使用模式匹配来解压缩点（`）的值，您就会知道我们可以以类似的方式从列表中切掉第一个元素（头部）。
+
+```eshell
+15> [Head|Tail] = NewList.
+[1,2,3,4]
+16> Head.
+1
+17> Tail.
+[2,3,4]
+18> [NewHead|NewTail] = Tail.
+[2,3,4]
+19> NewHead.
+2
+```
+
+The `|` we used is named the cons operator (constructor). In fact, any list can be built with only cons and values:
+我们使用的`| `名为cons运算符（构造函数）。事实上，任何列表都只能包含缺点和值：
+
+```eshell
+20> [1 | []].
+[1]
+21> [2 | [1 | []]].
+[2,1]
+22> [3 | [2 | [1 | []] ] ].
+[3,2,1]
+```
+
+This is to say any list can be built with the following formula: `[Term1| [Term2 | [... | [TermN]]]]...`. Lists can thus be defined recursively as a head preceding a tail, which is itself a head followed by more heads. In this sense we could imagine a list being a bit like an earthworm: you can slice it in half and you'll then have two worms.
+也就是说，任何列表都可以用以下公式建立：`[Term1 |[Term2 |[。。。|[TermN]]]。。。`。因此，列表可以递归地定义为一个头部在一个尾部之前，这本身就是一个头部，后面跟着多个头部。从这个意义上说，我们可以想象一个列表有点像蚯蚓：你可以把它切成两半，然后你会有两条蚯蚓。
+
+![Two drawn worms, the first one normal with the text 'Head' and 'tail' as usual; the second has its head cut off, and under it a new 'head' is written.](../img/worm.png "Worms, like lists can be defined recursively.")
+!【两条被画出来的虫子，第一条和往常一样写着‘头’和‘尾’；第二条被砍掉了头，下面写着一个新的‘头’。】。](。。/静态/img/worm。png“蠕虫，比如列表，可以递归定义。")
+
+The ways Erlang lists can be built are sometimes confusing to people who are not used to similar constructors. To help you get familiar with the concept, read all of these examples (hint: they're all equivalent):
+Erlang列表的构建方式有时会让不习惯类似构造函数的人感到困惑。为了帮助你熟悉这个概念，请阅读所有这些例子（提示：它们都是等效的）：
+
+```eshell
+[a, b, c, d]
+[a, b, c, d | []]
+[a, b | [c, d]]
+[a, b | [c | [d]]]
+[a | [b | [c | [d]]]]
+[a | [b | [c | [d | [] ]]]]
+```
+
+With this understood, you should be able to deal with list comprehensions.
+
+::: note
+**Note:** Using the form `[1 | 2]` gives what we call an 'improper list'. Improper lists will work when you pattern match in the `[Head|Tail]` manner, but will fail to be used with standard functions of Erlang (even `length()`). This is because Erlang expects proper lists. Proper lists end with an empty list as their last cell. When declaring an item like `[2]`, the list is automatically formed in a proper manner. As such, `[1|[2]]` would work! Improper lists, although syntactically valid, are of very limited use outside of user-defined data structures.
+**注：*使用表格“[1 | 2]”给出了我们所说的“不当列表”。当您以“[Head | Tail]”方式进行模式匹配时，不正确的列表会起作用，但无法与Erlang的标准函数（甚至是“length（）”）一起使用。这是因为Erlang需要合适的列表。正确的列表以空列表作为其最后一个单元格结束。当声明像“[2]”这样的项时，列表会以适当的方式自动形成。因此，“[1|[2]]”就行了！不恰当的列表虽然在语法上有效，但在用户定义的数据结构之外的用途非常有限。
+:::
+
+## [List Comprehensions]
+
+List comprehensions are ways to build or modify lists. They also make programs short and easy to understand compared to other ways of manipulating lists. It's based off the idea of set notation; if you've ever taken mathematics classes with set theory or if you've ever looked at mathematical notation, you probably know how that works. Set notation basically tells you how to build a set by specifying properties its members must satisfy. List comprehensions may be hard to grasp at first, but they're worth the effort. They make code cleaner and shorter, so don't hesitate to try and type in the examples until you understand them!
+列表理解是建立或修改列表的方法。与其他处理列表的方式相比，它们还使程序简短易懂。它基于集合记数法的思想；如果你上过集合论的数学课，或者你看过数学符号，你可能知道它是如何工作的。集合表示法基本上告诉您如何通过指定其成员必须满足的属性来构建集合。列表的理解一开始可能很难掌握，但它们值得努力。它们使代码更简洁，所以不要犹豫，尝试输入示例，直到您理解它们！
+
+An example of set notation would be ![ \> 0.
+
+List comprehensions in Erlang are about building sets from other sets. Given the set `, the Erlang implementation would be:
+Erlang中的列表理解是关于从其他集合构建集合。给定集合“”，Erlang实现将是：
+
+```eshell
+1> [2*N || N <- [1,2,3,4]].
+[2,4,6,8]
+```
+
+Compare the mathematical notation to the Erlang one and there's not a lot that changes: brackets (. The arrow acts exactly like the `=` operator, with the exception that it doesn't throw exceptions.
+将数学符号与Erlang符号进行比较，没有太多变化：括号(。箭头的行为与`=`操作符完全相同，只是它不会引发异常。
+
+You can also add constraints to a list comprehension by using operations that return boolean values. if we wanted all the even numbers from one to ten, we could write something like:
+还可以使用返回布尔值的操作向列表添加约束。如果我们想要从1到10的所有偶数，我们可以这样写：
+
+```eshell
+2> [X || X <- [1,2,3,4,5,6,7,8,9,10], X rem 2 =:= 0].
+[2,4,6,8,10]
+```
+
+Where `X rem 2 =:= 0` checks if a number is even. Practical applications come when we decide we want to apply a function to each element of a list, forcing it to respect constraints, etc. As an example, say we own a restaurant. A customer enters, sees our menu and asks if he could have the prices of all the items costing between \$3 and \$10 with taxes (say 7%) counted in afterwards.
+其中'X rem 2=：=0'检查数字是否为偶数。当我们决定要对列表中的每个元素应用一个函数，迫使它遵守约束等时，就会出现实际应用。例如，假设我们拥有一家餐厅。一位顾客走进来，看到我们的菜单，问他是否可以把所有价格在3美元到10美元之间的商品的价格加上税（比如7%）。
+
+```eshell
+3> RestaurantMenu = [].
+[,
+ ,
+ ,
+ ,
+ ]
+4> [ <- RestaurantMenu, Price >= 3, Price =< 10].
+[]
+```
+
+Of course, the decimals aren't rounded in a readable manner, but you get the point. The recipe for list comprehensions in Erlang is therefore `NewList = [Expression || Pattern <- List, Condition1, Condition2, ... ConditionN]`. The part `Pattern <- List` is named a Generator expression. You can have more than one!
+当然，小数不是以可读的方式四舍五入的，但你明白了。因此，Erlang中列表理解的方法是`NewList=[Expression | | Pattern<-list，Condition1，Condition2，。。。[n]`。部分“Pattern<-List”被命名为生成器表达式。你可以拥有不止一个！
+
+```eshell
+5> [X+Y || X <- [1,2], Y <- [2,3]].
+[3,4,4,5]
+```
+
+This runs the operations `1+2`, `1+3`, `2+2`, `2+3`. So if you want to make the list comprehension recipe more generic, you get: `NewList = [Expression || GeneratorExp1, GeneratorExp2, ..., GeneratorExpN, Condition1, Condition2, ... ConditionM]`. Note that the generator expressions coupled with pattern matching also act as a filter:
+这将运行操作“1+2”、“1+3”、“2+2”、“2+3”`。因此，如果你想让列表更通用，你会得到：`NewList=[Expression | | GeneratorExp1，GeneratorExp2，。。。，GeneratorExpN，条件1，条件2，。。。[M]`。请注意，与模式匹配相结合的生成器表达式也充当过滤器：
+
+```eshell
+6> Weather = [,   
+6>            ].
+[,
+ ,
+ ,
+ ,
+ ,
+ ]
+7> FoggyPlaces = [X ||  <- Weather].
+[london,boston]
+```
+
+If an element of the list 'Weather' doesn't match the  pattern, it's simply ignored in the list comprehension whereas the `=` operator would have thrown an exception.
+如果列表“Weather”中的一个元素与模式不匹配，那么它将在列表理解中被忽略，而“=”操作符将抛出一个异常。
+
+There is one more basic data type left for us to see for now. It is a surprising feature that makes interpreting binary data easy as pie.
+现在还有一种基本的数据类型留给我们看。这是一个令人惊讶的特性，使解释二进制数据变得非常容易。
+
+![Speedometer with values in binary](../img/binometer.png)
+
+## [Bit Syntax!]
+
+Most languages have support for manipulating data such as numbers, atoms, tuples, lists, records and/or structs, etc. Most of them also only have very raw facilities to manipulate binary data. Erlang goes out of its way to provide useful abstractions when dealing with binary values with pattern matching taken to the next level. It makes dealing with raw binary data fun and easy (no, really), which was necessary for the telecom applications it was created to help with. Bit manipulation has a unique syntax and idioms that may look kind of weird at first, but if you know how bits and bytes generally work, this should make sense to you. **You may want to skip the rest of this chapter otherwise**.
+大多数语言都支持操作数据，如数字、原子、元组、列表、记录和/或结构等。他们中的大多数人也只有非常原始的设备来操作二进制数据。在处理二进制值时，Erlang不遗余力地提供有用的抽象，并将模式匹配提升到下一个级别。它使处理原始二进制数据变得有趣和简单（不，真的），这对于它创建的电信应用程序来说是必要的。位操作有一种独特的语法和习惯用法，乍一看可能有点奇怪，但如果你知道位和字节通常是如何工作的，这对你来说应该是有意义的。**否则你可能想跳过本章的其余部分**。
+
+Bit syntax encloses binary data between \<\< and \>\>, splits it in readable segments, and each segment is separated by a comma. A segment is a sequence of bits of a binary (not necessarily on a byte boundary, although this is the default behaviour). Say we want to store an orange pixel of true color (24 bits). If you've ever checked colors in Photoshop or in a CSS style sheet for the web, you know the hexadecimal notation has the format #RRGGBB. A tint of orange is `#F09A29` in that notation, which could be expanded in Erlang to:
+位语法将二进制数据封装在\<\<和\>\>之间，将其拆分为可读段，每个段用逗号分隔。段是二进制的位序列（不一定在字节边界上，尽管这是默认行为）。假设我们想要存储一个真实颜色的橙色像素（24位）。如果你曾经在Photoshop或CSS网页样式表中检查过颜色，你就会知道十六进制符号的格式是#RRGGBB。橙色在该符号中是#F09A29'，可以在Erlang中扩展为：
+
+```eshell
+1> Color = 16#F09A29.
+15768105
+2> Pixel = <<Color:24>>.
+<<240,154,41>>
+```
+
+This basically says \"Put the binary values of `#F09A29` format again!
+
+What's more interesting is the ability to pattern match with binaries to unpack content:
+
+```eshell
+3> Pixels = <<213,45,132,64,76,32,76,0,0,234,32,15>>.
+<<213,45,132,64,76,32,76,0,0,234,32,15>>
+4> <<Pix1,Pix2,Pix3,Pix4>> = Pixels.
+** exception error: no match of right hand side value <<213,45,132,64,76,32,76,
+                                                        0,0,234,32,15>>
+5> <<Pix1:24, Pix2:24, Pix3:24, Pix4:24>> = Pixels.
+<<213,45,132,64,76,32,76,0,0,234,32,15>>
+```
+
+What we did on command 3 is declare what would be precisely 4 pixels of RGB colors in binary.\
+On expression 4, we tried to unpack 4 values from the binary content. It throws an exception, because we have more than 4 segments, we in fact have 12! So what we do is tell Erlang that each variable on the left side will hold 24 bits of data. That's what `Var:24` means. We can then take the first pixel and unpack it further into single color values:
+在表达式4中，我们试图从二进制内容中解压4个值。它抛出了一个异常，因为我们有超过4个片段，实际上我们有12个！所以我们要做的是告诉Erlang，左侧的每个变量将保存24位数据。这就是'Var:24'的意思。然后，我们可以将第一个像素进一步分解为单色值：
+
+```eshell
+6> <<R:8, G:8, B:8>> = <<Pix1:24>>.
+<<213,45,132>>
+7> R.
+213
+```
+
+\"Yeah that's dandy. What if I only wanted the first color from the start though? will I have to unpack all these values all the time?\" Hah! Doubt not! Erlang introduces more syntactic sugar and pattern matching to help you around:
+\“是的，那是丹迪。如果我从一开始就只想要第一种颜色呢？我需要一直解包所有这些值吗\“哈！毫无疑问！Erlang引入了更多语法糖和模式匹配来帮助您：
+
+```eshell
+8> <<R:8, Rest/binary>> = Pixels.
+<<213,45,132,64,76,32,76,0,0,234,32,15>>
+9> R.
+213
+```
+
+Nice, huh? That's because Erlang accepts more than one way to describe a binary segment. Those are all valid:
+不错吧？这是因为Erlang接受多种方式来描述二进制段。这些都是有效的：
+
+``` expand
+    Value
+    Value:Size
+    Value/TypeSpecifierList
+    Value:Size/TypeSpecifierList
+```
+
+where `Size` represents one or more of the following:
+
+Type
+:   Possible values: `integer | float | binary | bytes | bitstring | bits | utf8 | utf16 | utf32`
+:   This represents the kind of binary data used. Note that 'bytes' is shorthand for 'binary' and 'bits' is shorthand for 'bitstring'. When no type is specified, Erlang assumes an 'integer' type.
+：这表示使用的二进制数据的类型。请注意，“字节”是“二进制”的缩写，“比特”是“比特串”的缩写。如果未指定类型，Erlang将采用“整数”类型。
+
+Signedness
+:   Possible values: `signed | unsigned`
+:   Only matters for matching when the type is integer. The default is 'unsigned'.
+
+Endianness
+:   Possible values: `big | little | native`
+:   Endianness only matters when the Type is either integer, utf16, utf32, or float. This has to do with how the system reads binary data. As an example, the BMP image header format holds the size of its file as an integer stored on 4 bytes. For a file that has a size of 72 bytes, a little-endian system would represent this as `<<72,0,0,0>>` and a big-endian one as `<<0,0,0,72>>`. One will be read as '72' while the other will be read as '1207959552', so make sure you use the right endianness. There is also the option to use 'native', which will choose at run-time if the CPU uses little-endianness or big-endianness natively. By default, endianness is set to 'big'.
+：Endianness仅在类型为integer、utf16、utf32或float时才起作用。这与系统读取二进制数据的方式有关。例如，BMP图像头格式将其文件大小保存为一个整数，存储在4个字节上。对于一个大小为72字节的文件，一个小的尾端系统将表示为“<72,0,0>>”，而一个大的尾端系统将表示为“<0,0,72>>”`。其中一个将被解读为“72”，而另一个将被解读为“1207959552”，因此请确保使用正确的尾数。还有使用“native”的选项，如果CPU本机使用little endianness或big endianness，则会在运行时进行选择。默认情况下，endianness设置为“大”。
+
+Unit
+:   written `unit:Integer`
+:   This is the size of each segment, in bits. The allowed range is 1..256 and is set by default to 1 for integers, floats and bit strings and to 8 for binary. The utf8, utf16 and utf32 types require no unit to be defined. The multiplication of Size by Unit is equal to the number of bits the segment will take and must be evenly divisible by 8. The unit size is usually used to ensure byte-alignment.
+：这是每个段的大小，以位为单位。允许的范围是1。。256，对于整数、浮点和位字符串，默认设置为1，对于二进制设置为8。utf8、utf16和utf32类型不需要定义单元。大小与单位的乘积等于该段将采用的位数，并且必须能被8整除。单元大小通常用于确保字节对齐。
+
+The TypeSpecifierList is built by separating attributes by a '-'.
+
+Some examples may help digest the definitions:
+
+```eshell
+10> <<X1/unsigned>> =  <<-44>>.
+<<"Ô">>
+11> X1.
+212
+12> <<X2/signed>> =  <<-44>>.  
+<<"Ô">>
+13> X2.
+-44
+14> <<X2/integer-signed-little>> =  <<-44>>.
+<<"Ô">>
+15> X2.
+-44
+16> <<N:8/unit:1>> = <<72>>.
+<<"H">>
+17> N.
+72
+18> <<N/integer>> = <<72>>.
+<<"H">>
+19> <<Y:4/little-unit:8>> = <<72,0,0,0>>.      
+<<72,0,0,0>>
+20> Y.
+72
+```
+
+You can see there are more than one way to read, store and interpret binary data. This is a bit confusing, but still much simpler than using the usual tools given by most languages.
+您可以看到，读取、存储和解释二进制数据的方法不止一种。这有点令人困惑，但仍然比使用大多数语言提供的常用工具简单得多。
+
+The standard binary operations (shifting bits to left and right, binary 'and', 'or', 'xor', or 'not') also exist in Erlang. Just use the functions `bsl` (Bit Shift Left), `bsr` (Bit Shift Right), `band`, `bor`, `bxor`, and `bnot`.
+Erlang中也存在标准的二进制操作（将位向左和向右移位、二进制“和”、“或”、“或”、“异或”或“不”）。使用Bit``bsr`，`Bit``bsr`，`Bit`，`bbxor`，`Bit`，`bsr`，`Bit`，`bbxor`，``。
+
+```eshell
+2#00100 = 2#00010 bsl 1.
+2#00001 = 2#00010 bsr 1.
+2#10101 = 2#10001 bor 2#00101.
+```
+
+With that kind of notation and the bit syntax in general, parsing and pattern matching binary data is a piece of cake. One could parse TCP segments with code like this:
+有了这种表示法和位语法，解析和模式匹配二进制数据就轻而易举了。可以用如下代码解析TCP段：
+
+```erl
+<<SourcePort:16, DestinationPort:16,
+  AckNumber:32,
+  DataOffset:4, _Reserved:4, Flags:8, WindowSize:16,
+  CheckSum: 16, UrgentPointer:16,
+  Payload/binary>> = SomeBinary.
+```
+
+The same logic can then be applied to anything binary: video encoding, images, other protocol implementations, etc.
+同样的逻辑可以应用于任何二进制文件：视频编码、图像、其他协议实现等。
+
+::: 
+**Don't drink too much Kool-Aid:**\
+Erlang is slow compared to languages like C or C++. Unless you are a patient person, it would be a bad idea to do stuff like converting videos or images with it, even though the binary syntax makes it extremely interesting as I hinted above. Erlang is just not that great at heavy number crunching.
+与C或C等语言相比，Erlang速度较慢++。除非你是一个有耐心的人，否则用它来转换视频或图像是个坏主意，尽管二进制语法让它非常有趣，正如我在上面暗示的那样。Erlang只是不擅长大量的数字运算。
+
+Take note, however, that Erlang is still mighty fast for applications that do not require number crunching: reacting to events, message passing (with the help of atoms being extremely light), etc. It can deal with events in matters of milliseconds and as such is a great candidate for soft-real-time applications.
+然而，请注意，对于不需要进行数字运算的应用程序来说，Erlang仍然非常快：对事件做出反应、传递消息（借助原子非常轻的帮助），等等。它可以在几毫秒内处理事件，因此是软实时应用程序的最佳选择。
+:::
+
+![A string](../img/string.png)
+
+There's a whole other aspect to binary notation: bit strings. Binary strings are bolted on top of the language the same way they are with lists, but they're much more efficient in terms of space. This is because normal lists are linked lists (1 'node' per letter) while bit strings are more like C arrays. Bit strings use the syntax `<<"this is a bit string!">>`. The downside of binary strings compared to lists is a loss in simplicity when it comes to pattern matching and manipulation. Consequently, people tend to use binary strings when storing text that won't be manipulated too much or when space efficiency is a real issue.
+二进制表示法还有另一个方面：位字符串。二进制字符串与列表一样固定在语言的顶部，但在空间方面效率更高。这是因为普通列表是链表（每个字母1个“节点”），而位字符串更像是C数组。位字符串使用语法“<<”这是位字符串！”>>`。与列表相比，二进制字符串的缺点是在模式匹配和操作方面缺乏简单性。因此，当存储不会被太多操作的文本时，或者当空间效率是一个真正的问题时，人们倾向于使用二进制字符串。
+
+::: note
+**Note:** Even though bit strings are pretty light, you should avoid using them to tag values. It could be tempting to use string literals to say ``, but always use atoms when doing that. Previously in this chapter, atoms were said to be taking only 4 or 8 bytes in space, no matter how long they are. By using them, you'll have basically no overhead when copying data from function to function or sending it to another Erlang node on another server.\
+**注意：*即使位字符串很轻，也应该避免使用它们来标记值。使用字符串文字来表示“`”可能很有诱惑力，但在这样做时一定要使用原子。在本章之前，原子被认为在空间中只占4或8字节，不管它们有多长。通过使用它们，在将数据从一个函数复制到另一个函数或将其发送到另一台服务器上的另一个Erlang节点时，基本上不会有开销。\
+Conversely, do not use atoms to replace strings because they are lighter. Strings can be manipulated (splitting, regular expressions, etc) while atoms can only be compared and nothing else.
+相反，不要用原子代替弦，因为它们更轻。字符串可以被操纵（分裂、正则表达式等），而原子只能被比较，其他什么都不能。
+:::
+
+## [Binary Comprehensions]
+
+Binary comprehensions are to bit syntax what list comprehensions are to lists: a way to make code short and concise. They are relatively new in the Erlang world as they were there in previous revisions of Erlang, but required a module implementing them to use a special compile flag in order to work. Since the R13B revisions (those used here), they've become standard and can be used anywhere, including the shell:
+二进制理解是位语法，就像列表理解是列表：一种使代码简短的方法。它们在Erlang世界中相对较新，就像之前的Erlang版本一样，但需要一个实现它们的模块使用特殊的编译标志才能工作。自R13B版本（此处使用的版本）以来，它们已经成为标准，可以在任何地方使用，包括外壳：
+
+```eshell
+1> [ X || <<X>> <= <<1,2,3,4,5>>, X rem 2 == 0].     
+[2,4]
+```
+
+The only change in syntax from regular list comprehensions is the `<-` which became `<=` and using binaries (\<\<\>\>) instead of lists (\[\]). Earlier in this chapter we've seen an example where there was a binary value of many pixels on which we used pattern matching to grab the RGB values of each pixel. It was alright, but on larger structures, it would become possibly harder to read and maintain. The same exercise can be done with a one-line binary comprehension, which is much cleaner:
+与常规的列表理解相比，语法上唯一的变化是“<-”，它变成了“<=”，并使用二进制文件（\<\>\>）而不是列表（\[\]）。在本章前面，我们已经看到了一个例子，其中有许多像素的二进制值，我们使用模式匹配来获取每个像素的RGB值。这没关系，但在更大的结构上，它可能会变得更难阅读和维护。同样的练习也可以通过一行二进制理解来完成，它更简洁：
+
+```eshell
+2> Pixels = <<213,45,132,64,76,32,76,0,0,234,32,15>>.
+<<213,45,132,64,76,32,76,0,0,234,32,15>>
+3> RGB = [  || <<R:8,G:8,B:8>> <= Pixels ].
+[]
+```
+
+Changing `<-` to `<=` let us use a binary stream as a generator. The complete binary comprehension basically changed binary data to integers inside tuples. Another binary comprehension syntax exists to let you do the exact opposite:
+将`<-`更改为`<=`让我们使用二进制流作为生成器。完整的二进制理解基本上把二进制数据变成了元组中的整数。另一种二进制理解语法允许您执行完全相反的操作：
+
+```eshell
+4> << <<R:8, G:8, B:8>> ||   <- RGB >>.
+<<213,45,132,64,76,32,76,0,0,234,32,15>>
+```
+
+Be careful, as the elements of the resulting binary require a clearly defined size if the generator returned binaries:
+注意，如果生成器返回二进制文件，则生成的二进制文件的元素需要明确定义的大小：
+
+```eshell
+5> << <<Bin>> || Bin <- [<<3,7,5,4,7>>] >>.
+** exception error: bad argument
+6> << <<Bin/binary>> || Bin <- [<<3,7,5,4,7>>] >>.  
+<<3,7,5,4,7>>
+```
+
+It's also possible to have a binary comprehension with a binary generator, given the fixed-size rule above is respected:
+如果遵守上述固定大小规则，也可以使用二进制生成器进行二进制理解：
+
+```eshell
+7> << <<(X+1)/integer>> || <<X>> <= <<3,7,5,4,7>> >>.
+<<4,8,6,5,8>>
+```
+
+::: note
+**Note:** At the time of this writing, binary comprehensions were seldom used and not documented very well. As such, it was decided not to dig more than what is necessary to identify them and understand their basic working. To understand more bit syntax as a whole, read the [white paper defining their specification](http://user.it.uu.se/~pergu/papers/erlang05.pdf "Bit-level Binaries and Generalized Comprehensions in Erlang").
+**注：*在撰写本文时，二进制理解很少使用，也没有很好的记录。因此，决定挖掘的内容不超过识别它们和了解其基本工作所需的内容。要从整体上理解更多位语法，请阅读[定义其规范的白皮书](http://user。信息技术。uu。se/~pergu/papers/erlang05。pdf“Erlang中的位级二进制文件和通用理解”）。
+:::
