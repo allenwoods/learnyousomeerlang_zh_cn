@@ -1,4 +1,5 @@
-# 目录
+# Learn you some Erlang for Great Good 
+##### LYSE 中文翻译
 
 ## [1. 概述](zh/introduction.md)
 
