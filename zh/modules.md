@@ -6,7 +6,6 @@
 
 使用交互式shell通常被认为是使用动态编程语言的一个重要部分。它对测试各种代码和程序都很有用。使用Erlang的大多数基本数据类型时，甚至不需要打开文本编辑器或保存文件。你可以放下键盘，出去打球，结束一天的工作，但如果你就停在那里，你将是一个糟糕的Erlang程序员。代码需要保存在某个地方才能使用！
 
-This is what modules are for. Modules are a bunch of functions regrouped in a single file, under a single name. Additionally, all functions in Erlang must be defined in modules. You have already used modules, perhaps without realizing it. The BIFs mentioned in the previous chapter, like `hd` or `tl`, actually belong to the `erlang` module, as well as all of the arithmetic, logic and Boolean operators. BIFs from the `erlang` module differ from other functions as they are automatically imported when you use Erlang. Every other function defined in a module you will ever use needs to be called with the form `Module:Function(Arguments)`.
 这就是模块的用途。模块是在单个文件中以单个名称重新组合的一组函数。此外，Erlang中的所有函数都必须在模块中定义。您已经使用了模块，可能还没有意识到。上一章中提到的BIF，如`hd`或`tl`，实际上属于`erlang`模块，以及所有算术、逻辑和布尔运算符。`erlang`模块中的BIF与其他函数不同，因为它们是在使用erlang时自动导入的。在模块中定义的所有其他函数都需要以`Module:Function(Arguments)`的形式调用。
 
 ```erlang
@@ -30,7 +29,6 @@ b
 
 编写模块时，可以声明两种内容：*函数*和*属性*。属性是描述模块本身的元数据，如其名称、外部世界应可见的函数、代码作者等。这种元数据很有用，因为它向编译器提供了如何完成其工作的提示，还因为它允许人们从编译后的代码中检索有用的信息，而无需查阅源代码。
 
-There is a large variety of module attributes currently used in Erlang code across the world; as a matter of fact, you can even declare your own attributes for whatever you please. There are some pre-defined attributes that will appear more frequently than others in your code. All module attributes follow the form `-Name(Attribute).`. Only one of them is necessary for your module to be compilable:
 目前世界各地的Erlang代码中使用了大量的模块属性；事实上，你甚至可以随心所欲地声明自己的属性。有些预定义属性在代码中会比其他属性更频繁地出现。所有模块属性都遵循`-Name(Attribute).`。要使模块可编译，只需要其中一个：
 > -module(Name).
 > 这始终是文件的第一个属性（和语句），理由很充分：它是当前模块的名称，其中`Name`是参数。
@@ -55,7 +53,7 @@ There is a large variety of module attributes currently used in Erlang code acro
 
 函数体的内容为：
 
-```erl
+```erlang
 add(A,B) ->
     A + B.
 ```
@@ -130,7 +128,7 @@ ok
 
 默认情况下，shell只会在启动时所在的目录和标准库中查找文件：`cd/1`是专门为Erlang shell定义的函数，告诉它将目录更改为新目录，这样浏览文件就不那么麻烦了。Windows用户应该记住使用前斜杠`/`。完成后，请执行以下操作：
 
-```shell
+```eshell
 2> c(useless).
 
 ```
