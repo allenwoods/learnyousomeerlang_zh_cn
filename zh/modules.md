@@ -128,9 +128,9 @@ ok
 
 默认情况下，shell只会在启动时所在的目录和标准库中查找文件：`cd/1`是专门为Erlang shell定义的函数，告诉它将目录更改为新目录，这样浏览文件就不那么麻烦了。Windows用户应该记住使用前斜杠`/`。完成后，请执行以下操作：
 
-```eshell
+```shell
 2> c(useless).
-
+{ok,useless}
 ```
 
 如果您有另一条消息，请确保文件的名称正确，您位于正确的目录中，并且您在[module](../erlang/useless.erl.html "check against THIS!")中没有写错什么。一旦你成功编译了代码，你会发现。在`useless.erl`旁边多了个`useless.beam`文件。这是编译模块。让我们尝试我们的第一个功能：
