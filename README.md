@@ -9,29 +9,29 @@
 - [你需要什么?](zh/introduction.md#what-you-need "Bullets and targets is all you need *pumps shotgun*")
 - [如何求助](zh/introduction.md#get-help "Where to get help")
 
-## [2. Starting Out](zh/starting-out.md)
+## [2. 初探](zh/starting-out.md)
 
-- [The Shell](zh/starting-out.md#the-shell "Command line supremacy")
-- [Shell Commands](zh/starting-out.md#shell-commands "Using the command lines with supremacy")
+- [终端模拟器](zh/starting-out.md#the-shell "Command line supremacy")
+- [Shell命令](zh/starting-out.md#shell-commands "Using the command lines with supremacy")
 
-## [3. Starting Out (for real)](zh/starting-out-for-real.md)
+## [3. 真·初探](zh/starting-out-for-real.md)
 
-- [Numbers](zh/starting-out-for-real.md#numbers "Countin' stuff")
-- [Invariable Variables](zh/starting-out-for-real.md#invariable-variables "Non-Contradictory Oxymoron")
-- [Atoms](zh/starting-out-for-real.md#atoms "Can't break them apart")
-- [Boolean Algebra and Comparison Operators](zh/starting-out-for-real.md#bool-and-compare "George Boole portrait inside!")
-- [Tuples](zh/starting-out-for-real.md#tuples "A word fun to pronounce... and more!")
-- [Lists](zh/starting-out-for-real.md#lists "Much like this table of contents")
-- [List Comprehensions](zh/starting-out-for-real.md#list-comprehensions "slightly harder to comprehend than regular lists")
-- [Bit Syntax](zh/starting-out-for-real.md#bit-syntax "This is binary country")
-- [Binary Comprehensions](zh/starting-out-for-real.md#binary-comprehensions "Pushing it over the top")
+- [数字](zh/starting-out-for-real.md#numbers "Countin' stuff")
+- [不可变变量](zh/starting-out-for-real.md#invariable-variables "Non-Contradictory Oxymoron")
+- [原子](zh/starting-out-for-real.md#atoms "Can't break them apart")
+- [布尔代数与比较符](zh/starting-out-for-real.md#bool-and-compare "George Boole portrait inside!")
+- [元组](zh/starting-out-for-real.md#tuples "A word fun to pronounce... and more!")
+- [列表](zh/starting-out-for-real.md#lists "Much like this table of contents")
+- [列表推导](zh/starting-out-for-real.md#list-comprehensions "slightly harder to comprehend than regular lists")
+- [位句法](zh/starting-out-for-real.md#bit-syntax "This is binary country")
+- [二进制推导](zh/starting-out-for-real.md#binary-comprehensions "Pushing it over the top")
 
-## [4. Modules](zh/modules.md)
+## [4. 模块](zh/modules.md)
 
-- [What are modules](zh/modules.md#what-are-modules "Describing them modules")
-- [Module Declaration](zh/modules.md#module-declaration "Writing them modules")
-- [Compiling the Code](zh/modules.md#compiling-the-code "Compiling them modules")
-- [More About Modules](zh/modules.md#more-about-modules "More Abouting them modules?")
+- [什么是模块](zh/modules.md#what-are-modules "Describing them modules")
+- [模块声明](zh/modules.md#module-declaration "Writing them modules")
+- [编译代码](zh/modules.md#compiling-the-code "Compiling them modules")
+- [更多有关模块的内容](zh/modules.md#more-about-modules "More Abouting them modules?")
 
 ## [5. Syntax in Functions](zh/syntax-in-functions.md)
 
